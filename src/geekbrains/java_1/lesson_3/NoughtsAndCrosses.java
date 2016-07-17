@@ -171,8 +171,8 @@ public class NoughtsAndCrosses {
         int shift = 2 + len; // поправка для координат;
         //Проверка горизонтальных линий
         for (int i = 0; i < MAP_SIZE_X; i++)
-            for (int j = 0; j <= MAP_SIZE_Y - LEN_WIN; j++)
-                if (checkLine(i, j, 0, 1, LEN_WIN - len, c) && canWin(i, j, 0, 1, 2)) {
+            for (int j = 0; j < MAP_SIZE_Y; j++)
+                if (checkLine(i, j, 0, 1, LEN_WIN - len, c) && canWin(i, j, 0, 1, 2+len)) {
                     if (isValidCell(i, j + shift) && isEmptyCell(i, j + shift)) {
                         x = i;
                         y = j + shift;
@@ -185,8 +185,8 @@ public class NoughtsAndCrosses {
 
         //Проверка вертикальных линий
         for (int i = 0; i < MAP_SIZE_Y; i++)
-            for (int j = 0; j <= MAP_SIZE_X - LEN_WIN; j++)
-                if (checkLine(j, i, 1, 0, LEN_WIN - len, c) && canWin(j, i, 1, 0, 2)) {
+            for (int j = 0; j < MAP_SIZE_X; j++)
+                if (checkLine(j, i, 1, 0, LEN_WIN - len, c) && canWin(j, i, 1, 0, 2+len)) {
                     if (isValidCell(j + shift, i) && isEmptyCell(j + shift, i)) {
                         x = j + shift;
                         y = i;
@@ -198,9 +198,9 @@ public class NoughtsAndCrosses {
 
 
         //Проверка диагоналей
-        for (int i = 0; i <= MAP_SIZE_X - LEN_WIN; i++)
-            for (int j = 0; j <= MAP_SIZE_Y - LEN_WIN - len; j++)
-                if (checkLine(i, j, 1, 1, LEN_WIN - len, c) && canWin(i, j, 1, 1, 2)) {
+        for (int i = 0; i < MAP_SIZE_X; i++)
+            for (int j = 0; j < MAP_SIZE_Y; j++)
+                if (checkLine(i, j, 1, 1, LEN_WIN - len, c) && canWin(i, j, 1, 1, 2+len)) {
                     if (isValidCell(i + shift, j + shift) && isEmptyCell(i + shift, j + shift)) {
                         x = j + shift;
                         y = i + shift;
@@ -211,9 +211,9 @@ public class NoughtsAndCrosses {
                     }
                 }
 
-        for (int i = 0; i <= MAP_SIZE_X - LEN_WIN; i++)
+        for (int i = 0; i < MAP_SIZE_X; i++)
             for (int j = MAP_SIZE_Y - 1; j >= LEN_WIN; j--)
-                if (checkLine(i, j, 1, -1, LEN_WIN - len, c) && canWin(i, j, 1, -1, 2)) {
+                if (checkLine(i, j, 1, -1, LEN_WIN - len, c) && canWin(i, j, 1, -1, 2+len)) {
                     if (isValidCell(i + shift, j - shift) && isEmptyCell(i + shift, j - shift)) {
                         x = j - shift;
                         y = i + shift;
