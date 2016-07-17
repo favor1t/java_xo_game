@@ -80,15 +80,14 @@ public class NoughtsAndCrosses {
      */
     private static void aiTurn(char DOT) {
         int x, y;
-        System.out.println(Arrays.toString(checkWin(HUMAN_DOT, 0)));
-        int[] point = checkWin(HUMAN_DOT, 1);
+        int[] point = checkWin(HUMAN_DOT, 1,3);
         System.out.println("Ищем комбинации 3 в ряд");
         if (isValidCell(point[0], point[1]) && isEmptyCell(point[0], point[1])) {
             System.out.println("Ставим на = " + Arrays.toString(point));
             map[point[1]][point[0]] = DOT;
         } else {
             System.out.println("Ищем комбинации 2 в ряд");
-            point = checkWin(HUMAN_DOT, 0);
+            point = checkWin(HUMAN_DOT, 0,2);
             if (isValidCell(point[0], point[1]) && isEmptyCell(point[0], point[1])) {
                 System.out.println("Ставим на = " + Arrays.toString(point));
                 map[point[1]][point[0]] = DOT;
@@ -166,13 +165,13 @@ public class NoughtsAndCrosses {
         }
     }
 
-    private static int[] checkWin(char c, int len) {
+    private static int[] checkWin(char c, int len, int s) {
         int x = -1, y = -1;
-        int shift = 2 + len; // поправка для координат;
+        int shift = s; // поправка для координат;
         //Проверка горизонтальных линий
         for (int i = 0; i < MAP_SIZE_X; i++)
-            for (int j = 0; j < MAP_SIZE_Y; j++)
-                if (checkLine(i, j, 0, 1, LEN_WIN - len, c) && canWin(i, j, 0, 1, 2+len)) {
+            for (int j = 0; j <= MAP_SIZE_Y - LEN_WIN; j++)
+                if (checkLine(i, j, 0, 1, LEN_WIN - len, c) && canWin(i, j, 0, 1, 2)) {
                     if (isValidCell(i, j + shift) && isEmptyCell(i, j + shift)) {
                         x = i;
                         y = j + shift;
@@ -185,8 +184,8 @@ public class NoughtsAndCrosses {
 
         //Проверка вертикальных линий
         for (int i = 0; i < MAP_SIZE_Y; i++)
-            for (int j = 0; j < MAP_SIZE_X; j++)
-                if (checkLine(j, i, 1, 0, LEN_WIN - len, c) && canWin(j, i, 1, 0, 2+len)) {
+            for (int j = 0; j <= MAP_SIZE_X - LEN_WIN; j++)
+                if (checkLine(j, i, 1, 0, LEN_WIN - len, c) && canWin(j, i, 1, 0, 2)) {
                     if (isValidCell(j + shift, i) && isEmptyCell(j + shift, i)) {
                         x = j + shift;
                         y = i;
@@ -198,9 +197,9 @@ public class NoughtsAndCrosses {
 
 
         //Проверка диагоналей
-        for (int i = 0; i < MAP_SIZE_X; i++)
-            for (int j = 0; j < MAP_SIZE_Y; j++)
-                if (checkLine(i, j, 1, 1, LEN_WIN - len, c) && canWin(i, j, 1, 1, 2+len)) {
+        for (int i = 0; i <= MAP_SIZE_X - LEN_WIN; i++)
+            for (int j = 0; j <= MAP_SIZE_Y - LEN_WIN - len; j++)
+                if (checkLine(i, j, 1, 1, LEN_WIN - len, c) && canWin(i, j, 1, 1, 2)) {
                     if (isValidCell(i + shift, j + shift) && isEmptyCell(i + shift, j + shift)) {
                         x = j + shift;
                         y = i + shift;
@@ -211,9 +210,9 @@ public class NoughtsAndCrosses {
                     }
                 }
 
-        for (int i = 0; i < MAP_SIZE_X; i++)
+        for (int i = 0; i <= MAP_SIZE_X - LEN_WIN; i++)
             for (int j = MAP_SIZE_Y - 1; j >= LEN_WIN; j--)
-                if (checkLine(i, j, 1, -1, LEN_WIN - len, c) && canWin(i, j, 1, -1, 2+len)) {
+                if (checkLine(i, j, 1, -1, LEN_WIN - len, c) && canWin(i, j, 1, -1, 2)) {
                     if (isValidCell(i + shift, j - shift) && isEmptyCell(i + shift, j - shift)) {
                         x = j - shift;
                         y = i + shift;
