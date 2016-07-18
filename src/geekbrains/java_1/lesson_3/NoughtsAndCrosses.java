@@ -80,7 +80,11 @@ public class NoughtsAndCrosses {
      */
     private static void aiTurn(char DOT) {
         int x, y;
+        checkWin(HUMAN_DOT, 1, 0);
+        checkWin(HUMAN_DOT, 0, 0);
+        /*
         int[] point = checkWin(HUMAN_DOT, 1,3);
+
         System.out.println("Ищем комбинации 3 в ряд");
         if (isValidCell(point[0], point[1]) && isEmptyCell(point[0], point[1])) {
             System.out.println("Ставим на = " + Arrays.toString(point));
@@ -100,7 +104,7 @@ public class NoughtsAndCrosses {
                 map[y][x] = DOT;
             }
         }
-
+*/
 
     }
 
@@ -157,12 +161,14 @@ public class NoughtsAndCrosses {
      * @return boolean
      */
     private static boolean checkLine(int x, int y, int vx, int vy, int len, char c) {
-        if (map[x][y] == c && map[x + vx][y + vy] == c) {
-            if (len == LEN_WIN) return true;
-            return checkLine(x + vx, y + vy, vx, vy, len + 1, c);
-        } else {
-            return false;
+        if (isValidCell(x, y) && isValidCell(x + vx, y + vy)) {
+            if (map[x][y] == c && map[x + vx][y + vy] == c) {
+                if (len == LEN_WIN) return true;
+                return checkLine(x + vx, y + vy, vx, vy, len + 1, c);
+            }
         }
+        return false;
+
     }
 
     private static int[] checkWin(char c, int len, int s) {
@@ -170,32 +176,20 @@ public class NoughtsAndCrosses {
         int shift = s; // поправка для координат;
         //Проверка горизонтальных линий
         for (int i = 0; i < MAP_SIZE_X; i++)
-            for (int j = 0; j <= MAP_SIZE_Y - LEN_WIN; j++)
-                if (checkLine(i, j, 0, 1, LEN_WIN - len, c) && canWin(i, j, 0, 1, 2)) {
-                    if (isValidCell(i, j + shift) && isEmptyCell(i, j + shift)) {
-                        x = i;
-                        y = j + shift;
-                    } else if (isValidCell(i, j - shift) && isEmptyCell(i, j - shift)) {
-                        x = i;
-                        y = j - shift;
-                    }
+            for (int j = 0; j < MAP_SIZE_Y; j++)
+                if (checkLine(i, j, 0, 1, LEN_WIN - len, c)) {
+                    System.out.println("Опасность по горизонтале [" + j + "][" + i + "]" + " " + (len + 2));
                 }
 
 
         //Проверка вертикальных линий
         for (int i = 0; i < MAP_SIZE_Y; i++)
-            for (int j = 0; j <= MAP_SIZE_X - LEN_WIN; j++)
-                if (checkLine(j, i, 1, 0, LEN_WIN - len, c) && canWin(j, i, 1, 0, 2)) {
-                    if (isValidCell(j + shift, i) && isEmptyCell(j + shift, i)) {
-                        x = j + shift;
-                        y = i;
-                    } else if (isValidCell(j - shift, i) && isEmptyCell(j - shift, i)) {
-                        x = j - shift;
-                        y = i;
-                    }
+            for (int j = 0; j < MAP_SIZE_X; j++)
+                if (checkLine(j, i, 1, 0, LEN_WIN - len, c)) {
+                    System.out.println("Опасность по верткиале [" + j + "][" + i + "]" + " " + (len + 2));
                 }
 
-
+/*
         //Проверка диагоналей
         for (int i = 0; i <= MAP_SIZE_X - LEN_WIN; i++)
             for (int j = 0; j <= MAP_SIZE_Y - LEN_WIN - len; j++)
@@ -222,15 +216,17 @@ public class NoughtsAndCrosses {
                         y = i - shift;
                     }
                 }
-
+*/
         int[] res = {y, x};
         return res;
     }
 
     private static boolean canWin(int x, int y, int vx, int vy, int len) {
-        if (map[x][y] != AI_DOT && map[x + vx][y + vy] != AI_DOT) {
-            if (len == LEN_WIN) return true;
-            return canWin(x + vx, y + vy, vx, vy, len + 1);
+        if (isValidCell(x + vx, y + vy) && isValidCell(x, y)) {
+            if (map[x][y] != AI_DOT && map[x + vx][y + vy] != AI_DOT) {
+                if (len == LEN_WIN) return true;
+                return canWin(x + vx, y + vy, vx, vy, len + 1);
+            }
         }
         return false;
     }
