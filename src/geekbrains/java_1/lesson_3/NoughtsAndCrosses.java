@@ -9,8 +9,8 @@ public class NoughtsAndCrosses {
     private static final char HUMAN_DOT = 'X';
     private static final char AI_DOT = 'O';
     private static final char EMPTY_DOT = '*';
-    private static final int MAP_SIZE_Y = 5;
-    private static final int MAP_SIZE_X = 5;
+    private static final int MAP_SIZE_Y = 3;
+    private static final int MAP_SIZE_X = 3;
     private static final char[][] map = new char[MAP_SIZE_Y][MAP_SIZE_X];
     private static final Scanner sc = new Scanner(System.in);
     private static final Random rnd = new Random();
