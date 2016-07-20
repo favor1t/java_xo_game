@@ -14,7 +14,7 @@ public class NoughtsAndCrosses {
     private static final char[][] map = new char[MAP_SIZE_Y][MAP_SIZE_X];
     private static final Scanner sc = new Scanner(System.in);
     private static final Random rnd = new Random();
-    private static final int LEN_WIN = 4;
+    private static final int LEN_WIN = 3;
 
     public static void main(String[] args) {
         initMap();
@@ -79,58 +79,25 @@ public class NoughtsAndCrosses {
      *
      */
     private static void aiTurn(char DOT) {
+        if (detectAIWinCell()) return;
+        if (detectHumanWinCell()) return;
         int x, y;
-        checkWin(HUMAN_DOT, 1, 0);
-        checkWin(HUMAN_DOT, 0, 0);
-        /*
-        int[] point = checkWin(HUMAN_DOT, 1,3);
-
-        System.out.println("Ищем комбинации 3 в ряд");
-        if (isValidCell(point[0], point[1]) && isEmptyCell(point[0], point[1])) {
-            System.out.println("Ставим на = " + Arrays.toString(point));
-            map[point[1]][point[0]] = DOT;
-        } else {
-            System.out.println("Ищем комбинации 2 в ряд");
-            point = checkWin(HUMAN_DOT, 0,2);
-            if (isValidCell(point[0], point[1]) && isEmptyCell(point[0], point[1])) {
-                System.out.println("Ставим на = " + Arrays.toString(point));
-                map[point[1]][point[0]] = DOT;
-            } else {
-                System.out.println("Случайно ставим");
-                do {
-                    x = rnd.nextInt(MAP_SIZE_X);
-                    y = rnd.nextInt(MAP_SIZE_Y);
-                } while (!isEmptyCell(x, y));
-                map[y][x] = DOT;
-            }
-        }
-*/
-
+        do {
+            x = rnd.nextInt(MAP_SIZE_X);
+            y = rnd.nextInt(MAP_SIZE_Y);
+        } while (!isEmptyCell(x, y));
+        map[y][x] = AI_DOT;
     }
 
     private static boolean checkWin(char c) {
         //Проверка горизонтальных линий
         for (int i = 0; i < MAP_SIZE_X; i++)
-            for (int j = 0; j <= MAP_SIZE_Y - LEN_WIN; j++)
+            for (int j = 0; j < MAP_SIZE_Y; j++) {
                 if (checkLine(i, j, 0, 1, 2, c)) return true;
-
-
-        //Проверка вертикальных линий
-        for (int i = 0; i < MAP_SIZE_Y; i++)
-            for (int j = 0; j <= MAP_SIZE_X - LEN_WIN; j++)
-                if (checkLine(j, i, 1, 0, 2, c)) return true;
-
-
-        //Проветка диагоналей
-        for (int i = 0; i <= MAP_SIZE_X - LEN_WIN; i++)
-            for (int j = 0; j <= MAP_SIZE_Y - LEN_WIN; j++)
+                if (checkLine(i, j, 1, 0, 2, c)) return true;
                 if (checkLine(i, j, 1, 1, 2, c)) return true;
-
-        for (int i = 0; i <= MAP_SIZE_X - LEN_WIN; i++)
-            for (int j = MAP_SIZE_Y - 1; j >= LEN_WIN - 1; j--)
                 if (checkLine(i, j, 1, -1, 2, c)) return true;
-
-
+            }
         return false;
     }
 
@@ -171,61 +138,30 @@ public class NoughtsAndCrosses {
 
     }
 
-    private static int[] checkWin(char c, int len, int s) {
-        int x = -1, y = -1;
-        int shift = s; // поправка для координат;
-        //Проверка горизонтальных линий
-        for (int i = 0; i < MAP_SIZE_X; i++)
-            for (int j = 0; j < MAP_SIZE_Y; j++)
-                if (checkLine(i, j, 0, 1, LEN_WIN - len, c)) {
-                    System.out.println("Опасность по горизонтале [" + j + "][" + i + "]" + " " + (len + 2));
+    private static boolean detectAIWinCell() {
+        for (int i = 0; i < MAP_SIZE_Y; i++) {
+            for (int j = 0; j < MAP_SIZE_X; j++) {
+                if (isEmptyCell(j, i)) {
+                    map[i][j] = AI_DOT;
+                    if (checkWin(AI_DOT)) return true;
+                    map[i][j] = EMPTY_DOT;
                 }
-
-
-        //Проверка вертикальных линий
-        for (int i = 0; i < MAP_SIZE_Y; i++)
-            for (int j = 0; j < MAP_SIZE_X; j++)
-                if (checkLine(j, i, 1, 0, LEN_WIN - len, c)) {
-                    System.out.println("Опасность по верткиале [" + j + "][" + i + "]" + " " + (len + 2));
-                }
-
-/*
-        //Проверка диагоналей
-        for (int i = 0; i <= MAP_SIZE_X - LEN_WIN; i++)
-            for (int j = 0; j <= MAP_SIZE_Y - LEN_WIN - len; j++)
-                if (checkLine(i, j, 1, 1, LEN_WIN - len, c) && canWin(i, j, 1, 1, 2)) {
-                    if (isValidCell(i + shift, j + shift) && isEmptyCell(i + shift, j + shift)) {
-                        x = j + shift;
-                        y = i + shift;
-                    }
-                    if (isValidCell(i - shift, j - shift) && isEmptyCell(i - shift, j - shift)) {
-                        x = j - shift;
-                        y = i - shift;
-                    }
-                }
-
-        for (int i = 0; i <= MAP_SIZE_X - LEN_WIN; i++)
-            for (int j = MAP_SIZE_Y - 1; j >= LEN_WIN; j--)
-                if (checkLine(i, j, 1, -1, LEN_WIN - len, c) && canWin(i, j, 1, -1, 2)) {
-                    if (isValidCell(i + shift, j - shift) && isEmptyCell(i + shift, j - shift)) {
-                        x = j - shift;
-                        y = i + shift;
-                    }
-                    if (isValidCell(i - shift, j + shift) && isEmptyCell(i - shift, j + shift)) {
-                        x = j + shift;
-                        y = i - shift;
-                    }
-                }
-*/
-        int[] res = {y, x};
-        return res;
+            }
+        }
+        return false;
     }
 
-    private static boolean canWin(int x, int y, int vx, int vy, int len) {
-        if (isValidCell(x + vx, y + vy) && isValidCell(x, y)) {
-            if (map[x][y] != AI_DOT && map[x + vx][y + vy] != AI_DOT) {
-                if (len == LEN_WIN) return true;
-                return canWin(x + vx, y + vy, vx, vy, len + 1);
+    private static boolean detectHumanWinCell() {
+        for (int i = 0; i < MAP_SIZE_Y; i++) {
+            for (int j = 0; j < MAP_SIZE_X; j++) {
+                if (isEmptyCell(j, i)) {
+                    map[i][j] = HUMAN_DOT;
+                    if (checkWin(HUMAN_DOT)) {
+                        map[i][j] = AI_DOT;
+                        return true;
+                    }
+                    map[i][j] = EMPTY_DOT;
+                }
             }
         }
         return false;
